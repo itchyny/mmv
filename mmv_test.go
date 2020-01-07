@@ -133,6 +133,30 @@ func TestMove(t *testing.T) {
 			},
 		},
 		{
+			name: "empty source path error",
+			files: map[string]string{
+				"foo": "baz",
+				"":    "baz",
+			},
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			err: &emptyPathError{},
+		},
+		{
+			name: "empty destination path error",
+			files: map[string]string{
+				"foo": "baz",
+				"bar": "",
+			},
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			err: &emptyPathError{},
+		},
+		{
 			name: "same destination error",
 			files: map[string]string{
 				"foo": "baz",

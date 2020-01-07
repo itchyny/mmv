@@ -25,6 +25,12 @@ type rename struct {
 	src, dst string
 }
 
+type emptyPathError struct{}
+
+func (err *emptyPathError) Error() string {
+	return "empty path error"
+}
+
 type sameDestinationError struct {
 	path string
 }
@@ -38,6 +44,9 @@ func buildRenames(files map[string]string) ([]rename, error) {
 	vs := make(map[string]int, len(files))
 	revs := make(map[string]string, len(files))
 	for src, dst := range files {
+		if src == "" || dst == "" {
+			return nil, &emptyPathError{}
+		}
 		if _, ok := revs[dst]; ok {
 			return nil, &sameDestinationError{dst}
 		}
