@@ -47,6 +47,10 @@ func buildRenames(files map[string]string) ([]rename, error) {
 		if src == "" || dst == "" {
 			return nil, &emptyPathError{}
 		}
+		if d := filepath.Clean(dst); d != dst {
+			dst = d
+			files[src] = dst
+		}
 		if _, ok := revs[dst]; ok {
 			return nil, &sameDestinationError{dst}
 		}

@@ -170,6 +170,18 @@ func TestMove(t *testing.T) {
 			},
 			err: &sameDestinationError{"baz"},
 		},
+		{
+			name: "cleaned path same destination error",
+			files: map[string]string{
+				"foo": "baz",
+				"bar": "foo/../baz",
+			},
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			err: &sameDestinationError{"baz"},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
