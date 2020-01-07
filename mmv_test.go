@@ -16,6 +16,7 @@ func TestMove(t *testing.T) {
 		files    map[string]string
 		contents map[string]string
 		expected map[string]string
+		cnt      int
 		err      error
 	}{
 		{
@@ -27,6 +28,7 @@ func TestMove(t *testing.T) {
 			files: map[string]string{
 				"foo": "bar",
 			},
+			cnt: 1,
 			contents: map[string]string{
 				"foo": "0",
 			},
@@ -40,6 +42,7 @@ func TestMove(t *testing.T) {
 				"foo": "qux",
 				"bar": "quxx",
 			},
+			cnt: 2,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -51,6 +54,84 @@ func TestMove(t *testing.T) {
 				"baz":  "2",
 			},
 		},
+		{
+			name: "swap two files",
+			files: map[string]string{
+				"foo": "bar",
+				"bar": "foo",
+			},
+			cnt: 3,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+			},
+			expected: map[string]string{
+				"bar": "0",
+				"foo": "1",
+				"baz": "2",
+			},
+		},
+		{
+			name: "two swaps",
+			files: map[string]string{
+				"foo": "bar",
+				"bar": "foo",
+				"baz": "qux",
+				"qux": "baz",
+			},
+			cnt: 6,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+				"qux": "3",
+			},
+			expected: map[string]string{
+				"bar": "0",
+				"foo": "1",
+				"qux": "2",
+				"baz": "3",
+			},
+		},
+		{
+			name: "three files",
+			files: map[string]string{
+				"foo": "bar",
+				"bar": "baz",
+				"baz": "qux",
+			},
+			cnt: 3,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+			},
+			expected: map[string]string{
+				"bar": "0",
+				"baz": "1",
+				"qux": "2",
+			},
+		},
+		{
+			name: "cycle three files",
+			files: map[string]string{
+				"foo": "bar",
+				"bar": "baz",
+				"baz": "foo",
+			},
+			cnt: 4,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+			},
+			expected: map[string]string{
+				"bar": "0",
+				"baz": "1",
+				"foo": "2",
+			},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -59,6 +140,8 @@ func TestMove(t *testing.T) {
 			require.NoError(t, os.Chdir(dir))
 			require.NoError(t, err)
 			require.NoError(t, setupFiles(tc.contents))
+			rs, _ := buildRenames(tc.files)
+			assert.Equal(t, tc.cnt, len(rs))
 			require.NoError(t, Move(tc.files))
 			assert.Equal(t, tc.expected, fileContents("."))
 		})
