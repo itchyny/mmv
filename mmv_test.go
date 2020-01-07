@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMove(t *testing.T) {
+func TestRename(t *testing.T) {
 	testCases := []struct {
 		name     string
 		files    map[string]string
@@ -192,7 +192,7 @@ func TestMove(t *testing.T) {
 			require.NoError(t, setupFiles(tc.contents))
 			rs, _ := buildRenames(tc.files)
 			assert.Equal(t, tc.cnt, len(rs))
-			got := Move(tc.files)
+			got := Rename(tc.files)
 			if tc.err == nil {
 				require.NoError(t, got)
 				assert.Equal(t, tc.expected, fileContents("."))

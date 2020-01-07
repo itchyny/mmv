@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 )
 
-// Move multiple files.
-func Move(files map[string]string) error {
+// Rename multiple files.
+func Rename(files map[string]string) error {
 	rs, err := buildRenames(files)
 	if err != nil {
 		return err
