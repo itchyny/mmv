@@ -25,11 +25,22 @@ type rename struct {
 	src, dst string
 }
 
+type sameDestinationError struct {
+	path string
+}
+
+func (err *sameDestinationError) Error() string {
+	return fmt.Sprintf("duplicate destination: %s", err.path)
+}
+
 func buildRenames(files map[string]string) ([]rename, error) {
 	rs := make([]rename, 0, 2*len(files))
 	vs := make(map[string]int, len(files))
 	revs := make(map[string]string, len(files))
 	for src, dst := range files {
+		if _, ok := revs[dst]; ok {
+			return nil, &sameDestinationError{dst}
+		}
 		revs[dst] = src
 	}
 	var i int

@@ -132,6 +132,20 @@ func TestMove(t *testing.T) {
 				"foo": "2",
 			},
 		},
+		{
+			name: "same destination error",
+			files: map[string]string{
+				"foo": "baz",
+				"bar": "baz",
+				"baz": "qux",
+			},
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+			},
+			err: &sameDestinationError{"baz"},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -142,8 +156,13 @@ func TestMove(t *testing.T) {
 			require.NoError(t, setupFiles(tc.contents))
 			rs, _ := buildRenames(tc.files)
 			assert.Equal(t, tc.cnt, len(rs))
-			require.NoError(t, Move(tc.files))
-			assert.Equal(t, tc.expected, fileContents("."))
+			got := Move(tc.files)
+			if tc.err == nil {
+				require.NoError(t, got)
+				assert.Equal(t, tc.expected, fileContents("."))
+			} else {
+				assert.Equal(t, tc.err, got)
+			}
 		})
 	}
 }
