@@ -84,7 +84,7 @@ func rename(args []string) error {
 		f.WriteString("\n")
 	}
 	editor := os.Getenv("EDITOR")
-	if editor != "" {
+	if editor == "" {
 		editor = "vi"
 	}
 	tty, err := tty.Open()
