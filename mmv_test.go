@@ -171,6 +171,22 @@ func TestRename(t *testing.T) {
 			err: &sameDestinationError{"baz"},
 		},
 		{
+			name: "clean source path",
+			files: map[string]string{
+				"foo":  "bar",
+				"bar/": "foo/",
+			},
+			cnt: 3,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			expected: map[string]string{
+				"bar": "0",
+				"foo": "1",
+			},
+		},
+		{
 			name: "cleaned path same destination error",
 			files: map[string]string{
 				"foo": "baz",
