@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 
+	_ "github.com/mattn/getwild"
 	"github.com/mattn/go-tty"
 
 	"github.com/itchyny/mmv"
