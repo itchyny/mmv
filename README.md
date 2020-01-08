@@ -17,7 +17,7 @@ go get -u github.com/itchyny/mmv/cmd/mmv
 - `mmv` supports renaming in cycle (`mv a b`, `mv b c` and `mv c a` at the same time).
 - `mmv` is designed to be simple as `mv`. It requires no configuration file.
 - `mmv` is capable to use as a library (just call `mmv.Rename`).
-- `mmv` is easy to remember (I believe), **m**lti-**mv**.
+- `mmv` is easy to remember (I believe), **m**ulti-**mv**.
 
 ## Bug Tracker
 Report bug at [Issues・itchyny/mmv - GitHub](https://github.com/itchyny/mmv/issues).
