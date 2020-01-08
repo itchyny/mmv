@@ -9,7 +9,7 @@ The command finds the changed lines and renames all the corresponding files.
 
 ## Installation
 ```bash
-go get -u github.com/itchyny/mmv/cmd/mmv
+go get github.com/itchyny/mmv/cmd/mmv
 ```
 
 ## Features
