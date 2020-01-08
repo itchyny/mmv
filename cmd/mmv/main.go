@@ -48,7 +48,7 @@ Options:
 		fs.PrintDefaults()
 	}
 	var showVersion bool
-	fs.BoolVar(&showVersion, "v", false, "print version")
+	fs.BoolVar(&showVersion, "version", false, "print version")
 	if err := fs.Parse(args); err != nil {
 		if err == flag.ErrHelp {
 			return exitCodeOK
