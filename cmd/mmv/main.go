@@ -104,7 +104,7 @@ func rename(args []string) error {
 	cmd.Stdout = tty.Output()
 	cmd.Stderr = tty.Output()
 	if err := cmd.Run(); err != nil {
-		return err
+		return fmt.Errorf("abort renames: %s", err)
 	}
 	if err := f.Close(); err != nil {
 		return err
