@@ -113,7 +113,7 @@ func rename(args []string) error {
 	if err != nil {
 		return err
 	}
-	got := strings.Split(strings.TrimSpace(string(cnt)), "\n")
+	got := strings.Split(strings.TrimRight(string(cnt), "\n"), "\n")
 	if len(args) != len(got) {
 		return errors.New("do not delete or add lines")
 	}
