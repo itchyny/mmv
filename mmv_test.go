@@ -293,7 +293,7 @@ func fileContents(dir string) map[string]string {
 		} else {
 			path := filepath.Join(dir, fi.Name())
 			cnt, _ := ioutil.ReadFile(path)
-			m[path] = string(cnt)
+			m[filepath.ToSlash(path)] = string(cnt)
 		}
 	}
 	if len(m) == 0 {
