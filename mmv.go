@@ -41,9 +41,13 @@ func (err *sameDestinationError) Error() string {
 
 func buildRenames(files map[string]string) ([]rename, error) {
 	rs := make([]rename, 0, 2*len(files))
-	vs := make(map[string]int, len(files))
 	revs := make(map[string]string, len(files))
-	for src, dst := range files {
+	srcs := make([]string, 0, len(files))
+	for src := range files {
+		srcs = append(srcs, src)
+	}
+	for _, src := range srcs {
+		dst := files[src]
 		if src == "" || dst == "" {
 			return nil, &emptyPathError{}
 		}
@@ -68,6 +72,7 @@ func buildRenames(files map[string]string) ([]rename, error) {
 		}
 	}
 	var i int
+	vs := make(map[string]int, len(files))
 	for _, dst := range files {
 		if vs[dst] > 0 {
 			continue
