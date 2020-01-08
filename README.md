@@ -12,6 +12,13 @@ The command finds the changed lines and renames all the corresponding files.
 go get -u github.com/itchyny/mmv/cmd/mmv
 ```
 
+## Features
+- `mmv` is implemented in Go language and completely portable.
+- `mmv` supports renaming in cycle (`mv a b`, `mv b c` and `mv c a` at the same time).
+- `mmv` is designed to be simple as `mv`. It requires no configuration file.
+- `mmv` is capable to use as a library (just call `mmv.Rename`).
+- `mmv` is easy to remember (I believe), **m**lti-**mv**.
+
 ## Bug Tracker
 Report bug at [Issues・itchyny/mmv - GitHub](https://github.com/itchyny/mmv/issues).
 
