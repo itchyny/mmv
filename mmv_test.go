@@ -236,7 +236,7 @@ func TestRename(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			dir, err := ioutil.TempDir("", "mvv-"+tc.name+"-")
+			dir, err := ioutil.TempDir("", "mmv-"+tc.name+"-")
 			defer os.RemoveAll(dir)
 			require.NoError(t, os.Chdir(dir))
 			require.NoError(t, err)
