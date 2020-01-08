@@ -8,6 +8,12 @@ This command opens the editor with the list of file names so edit and write.
 The command finds the changed lines and renames all the corresponding files.
 
 ## Installation
+### Homebrew
+```sh
+brew install itchyny/tap/mmv
+```
+
+### Build from source
 ```bash
 go get github.com/itchyny/mmv/cmd/mmv
 ```
