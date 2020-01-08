@@ -119,9 +119,7 @@ func rename(args []string) error {
 	}
 	files := make(map[string]string, len(args))
 	for i, src := range args {
-		if dst := got[i]; src != dst {
-			files[src] = dst
-		}
+		files[src] = got[i]
 	}
 	return mmv.Rename(files)
 }
