@@ -198,6 +198,30 @@ func TestRename(t *testing.T) {
 			},
 			err: &sameDestinationError{"baz"},
 		},
+		{
+			name: "same source and destination",
+			files: map[string]string{
+				"foo/": "foo",
+				"bar/": "bar",
+			},
+			cnt: 0,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			expected: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+		},
+		{
+			name: "same source and destination with error",
+			files: map[string]string{
+				"foo/": "foo/",
+				"bar/": "foo",
+			},
+			err: &sameDestinationError{"foo"},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

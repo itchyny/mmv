@@ -61,6 +61,12 @@ func buildRenames(files map[string]string) ([]rename, error) {
 		}
 		revs[dst] = src
 	}
+	for src, dst := range files {
+		if src == dst {
+			delete(files, src)
+			delete(revs, dst)
+		}
+	}
 	var i int
 	for _, dst := range files {
 		if vs[dst] > 0 {
