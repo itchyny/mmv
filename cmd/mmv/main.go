@@ -41,7 +41,7 @@ func run(args []string) int {
 Version: %s (rev: %s/%s)
 
 Synopsis:
-  %% %[1]s files ...
+  %% %[1]s file ...
 
 Options:
 `, name, version, revision, runtime.Version())
@@ -61,7 +61,7 @@ Options:
 	}
 	args = fs.Args()
 	if len(args) == 0 {
-		fmt.Fprintf(os.Stderr, "usage: %s files ...\n", name)
+		fmt.Fprintf(os.Stderr, "usage: %s file ...\n", name)
 		return exitCodeErr
 	}
 	if err := rename(args); err != nil {
