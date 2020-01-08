@@ -71,6 +71,13 @@ Options:
 }
 
 func rename(args []string) error {
+	xs := make(map[string]bool, len(args))
+	for _, src := range args {
+		if xs[src] {
+			return fmt.Errorf("duplicate source: %s", src)
+		}
+		xs[src] = true
+	}
 	f, err := ioutil.TempFile("", name+"-")
 	if err != nil {
 		return err
