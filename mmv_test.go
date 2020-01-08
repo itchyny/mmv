@@ -233,6 +233,25 @@ func TestRename(t *testing.T) {
 			},
 			err: &sameDestinationError{"foo"},
 		},
+		{
+			name: "create destination directory",
+			files: map[string]string{
+				"foo": "x/foo",
+				"bar": "x/bar",
+				"baz": "a/b/c/baz",
+			},
+			count: 3,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+			},
+			expected: map[string]string{
+				"x/foo":     "0",
+				"x/bar":     "1",
+				"a/b/c/baz": "2",
+			},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

@@ -14,11 +14,29 @@ func Rename(files map[string]string) error {
 		return err
 	}
 	for _, r := range rs {
-		if err := os.Rename(r.src, r.dst); err != nil {
+		if err := doRename(r.src, r.dst); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+// rename with creating the destination directory
+func doRename(src, dst string) (err error) {
+	// first of all, try renaming the file, which will succeed in most cases
+	if err = os.Rename(src, dst); err != nil && os.IsNotExist(err) {
+		// check the source file existence to exit without creating the destination
+		// directory when the both source file and destination directory do not exist
+		if _, err := os.Stat(src); err == nil {
+			// create the destination directory
+			if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil {
+				return err
+			}
+			// try renaming again
+			return os.Rename(src, dst)
+		}
+	}
+	return
 }
 
 type rename struct {
