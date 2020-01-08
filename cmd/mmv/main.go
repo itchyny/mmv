@@ -60,7 +60,7 @@ Options:
 	}
 	args = fs.Args()
 	if len(args) == 0 {
-		fmt.Printf("usage: %s files ...\n", name)
+		fmt.Fprintf(os.Stderr, "usage: %s files ...\n", name)
 		return exitCodeErr
 	}
 	if err := rename(args); err != nil {
