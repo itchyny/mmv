@@ -187,6 +187,18 @@ func TestRename(t *testing.T) {
 			},
 		},
 		{
+			name: "cleaned path same source error",
+			files: map[string]string{
+				"foo":        "baz",
+				"bar/../foo": "bar",
+			},
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			err: &sameSourceError{"foo"},
+		},
+		{
 			name: "cleaned path same destination error",
 			files: map[string]string{
 				"foo": "baz",

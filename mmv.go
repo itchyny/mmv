@@ -31,6 +31,14 @@ func (err *emptyPathError) Error() string {
 	return "empty path error"
 }
 
+type sameSourceError struct {
+	path string
+}
+
+func (err *sameSourceError) Error() string {
+	return fmt.Sprintf("duplicate source: %s", err.path)
+}
+
 type sameDestinationError struct {
 	path string
 }
@@ -57,6 +65,9 @@ func buildRenames(files map[string]string) ([]rename, error) {
 		if d := filepath.Clean(src); d != src {
 			delete(files, src)
 			src = d
+			if _, ok := files[src]; ok {
+				return nil, &sameSourceError{src}
+			}
 			files[src] = dst
 		}
 		if d := filepath.Clean(dst); d != dst {
