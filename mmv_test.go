@@ -16,7 +16,7 @@ func TestRename(t *testing.T) {
 		files    map[string]string
 		contents map[string]string
 		expected map[string]string
-		cnt      int
+		count    int
 		err      error
 	}{
 		{
@@ -28,7 +28,7 @@ func TestRename(t *testing.T) {
 			files: map[string]string{
 				"foo": "bar",
 			},
-			cnt: 1,
+			count: 1,
 			contents: map[string]string{
 				"foo": "0",
 			},
@@ -42,7 +42,7 @@ func TestRename(t *testing.T) {
 				"foo": "qux",
 				"bar": "quxx",
 			},
-			cnt: 2,
+			count: 2,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -60,7 +60,7 @@ func TestRename(t *testing.T) {
 				"foo": "bar",
 				"bar": "foo",
 			},
-			cnt: 3,
+			count: 3,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -80,7 +80,7 @@ func TestRename(t *testing.T) {
 				"baz": "qux",
 				"qux": "baz",
 			},
-			cnt: 6,
+			count: 6,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -101,7 +101,7 @@ func TestRename(t *testing.T) {
 				"bar": "baz",
 				"baz": "qux",
 			},
-			cnt: 3,
+			count: 3,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -120,7 +120,7 @@ func TestRename(t *testing.T) {
 				"bar": "baz",
 				"baz": "foo",
 			},
-			cnt: 4,
+			count: 4,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -176,7 +176,7 @@ func TestRename(t *testing.T) {
 				"foo":  "bar",
 				"bar/": "foo/",
 			},
-			cnt: 3,
+			count: 3,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -216,7 +216,6 @@ func TestRename(t *testing.T) {
 				"foo/": "foo",
 				"bar/": "bar",
 			},
-			cnt: 0,
 			contents: map[string]string{
 				"foo": "0",
 				"bar": "1",
@@ -243,7 +242,7 @@ func TestRename(t *testing.T) {
 			require.NoError(t, err)
 			require.NoError(t, setupFiles(tc.contents))
 			rs, _ := buildRenames(clone(tc.files))
-			assert.Equal(t, tc.cnt, len(rs))
+			assert.Equal(t, tc.count, len(rs))
 			got := Rename(tc.files)
 			if tc.err == nil {
 				require.NoError(t, got)
