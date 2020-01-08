@@ -230,7 +230,7 @@ func TestRename(t *testing.T) {
 			require.NoError(t, os.Chdir(dir))
 			require.NoError(t, err)
 			require.NoError(t, setupFiles(tc.contents))
-			rs, _ := buildRenames(tc.files)
+			rs, _ := buildRenames(clone(tc.files))
 			assert.Equal(t, tc.cnt, len(rs))
 			got := Rename(tc.files)
 			if tc.err == nil {
@@ -270,4 +270,12 @@ func fileContents(dir string) map[string]string {
 		return nil
 	}
 	return m
+}
+
+func clone(xs map[string]string) map[string]string {
+	ys := make(map[string]string, len(xs))
+	for k, v := range xs {
+		ys[k] = v
+	}
+	return ys
 }
