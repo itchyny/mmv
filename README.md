@@ -23,8 +23,9 @@ go get github.com/itchyny/mmv/cmd/mmv
 
 ## Features
 - `mmv` is implemented in Go language and completely portable.
-- `mmv` supports renaming in cycle (`mv a b`, `mv b c` and `mv c a` at the same time).
 - `mmv` is designed to be simple as `mv`. It requires no configuration file.
+- `mmv` supports renaming in cycle (`mv a b`, `mv b c` and `mv c a` at the same time).
+- `mmv` creates destination directories automatically. You can arrange pictures like `yyyy-mm-dd xxxx.jpg` to `yyyy/mm/dd/xxxx.jpg`.
 - `mmv` is capable to use as a library (just call `mmv.Rename`).
 - `mmv` is easy to remember (I believe), **m**ulti-**mv**.
 
