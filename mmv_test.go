@@ -17,7 +17,7 @@ func TestRename(t *testing.T) {
 		contents map[string]string
 		expected map[string]string
 		count    int
-		err      error
+		err      string
 	}{
 		{
 			name:  "nothing",
@@ -40,7 +40,7 @@ func TestRename(t *testing.T) {
 			name: "two files",
 			files: map[string]string{
 				"foo": "qux",
-				"bar": "quxx",
+				"bar": "quux",
 			},
 			count: 2,
 			contents: map[string]string{
@@ -50,7 +50,7 @@ func TestRename(t *testing.T) {
 			},
 			expected: map[string]string{
 				"qux":  "0",
-				"quxx": "1",
+				"quux": "1",
 				"baz":  "2",
 			},
 		},
@@ -146,7 +146,7 @@ func TestRename(t *testing.T) {
 				"foo": "0",
 				"bar": "1",
 			},
-			err: &emptyPathError{},
+			err: "empty path error",
 		},
 		{
 			name: "empty destination path error",
@@ -162,7 +162,7 @@ func TestRename(t *testing.T) {
 				"foo": "0",
 				"bar": "1",
 			},
-			err: &emptyPathError{},
+			err: "empty path error",
 		},
 		{
 			name: "same destination error",
@@ -181,7 +181,7 @@ func TestRename(t *testing.T) {
 				"bar": "1",
 				"baz": "2",
 			},
-			err: &sameDestinationError{"baz"},
+			err: "duplicate destination: baz",
 		},
 		{
 			name: "clean source path",
@@ -213,7 +213,7 @@ func TestRename(t *testing.T) {
 				"foo": "0",
 				"bar": "1",
 			},
-			err: &sameSourceError{"foo"},
+			err: "duplicate source: foo",
 		},
 		{
 			name: "cleaned path same destination error",
@@ -229,7 +229,7 @@ func TestRename(t *testing.T) {
 				"foo": "0",
 				"bar": "1",
 			},
-			err: &sameDestinationError{"baz"},
+			err: "duplicate destination: baz",
 		},
 		{
 			name: "same source and destination",
@@ -252,7 +252,7 @@ func TestRename(t *testing.T) {
 				"foo/": "foo/",
 				"bar/": "foo",
 			},
-			err: &sameDestinationError{"foo"},
+			err: "duplicate destination: foo",
 		},
 		{
 			name: "create destination directory",
@@ -284,10 +284,10 @@ func TestRename(t *testing.T) {
 			rs, _ := buildRenames(clone(tc.files))
 			assert.Equal(t, tc.count, len(rs))
 			err = Rename(tc.files)
-			if tc.err == nil {
+			if tc.err == "" {
 				assert.NoError(t, err)
 			} else {
-				assert.Equal(t, tc.err, err)
+				assert.Contains(t, err.Error(), tc.err)
 			}
 			assert.Equal(t, tc.expected, fileContents("."))
 		})
