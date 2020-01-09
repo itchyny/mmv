@@ -307,7 +307,7 @@ func TestRename(t *testing.T) {
 			require.NoError(t, setupFiles(tc.contents))
 			rs, _ := buildRenames(clone(tc.files))
 			assert.Equal(t, tc.count, len(rs))
-			err = Rename(tc.files)
+			err = Rename(tc.files, false)
 			if tc.err == "" {
 				assert.NoError(t, err)
 			} else {

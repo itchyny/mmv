@@ -48,7 +48,9 @@ Options:
 		fs.PrintDefaults()
 	}
 	var showVersion bool
+	var dryRun bool
 	fs.BoolVar(&showVersion, "version", false, "print version")
+	fs.BoolVar(&dryRun, "dry-run", false, "only show the operation that would have been performed")
 	if err := fs.Parse(args); err != nil {
 		if err == flag.ErrHelp {
 			return exitCodeOK
@@ -64,14 +66,14 @@ Options:
 		fmt.Fprintf(os.Stderr, "usage: %s file ...\n", name)
 		return exitCodeErr
 	}
-	if err := rename(args); err != nil {
+	if err := rename(args, dryRun); err != nil {
 		fmt.Fprintf(os.Stderr, "%s: %s\n", name, err)
 		return exitCodeErr
 	}
 	return exitCodeOK
 }
 
-func rename(args []string) error {
+func rename(args []string, dryRun bool) error {
 	xs := make(map[string]bool, len(args))
 	for _, src := range args {
 		if xs[src] {
@@ -122,5 +124,5 @@ func rename(args []string) error {
 	for i, src := range args {
 		files[src] = got[i]
 	}
-	return mmv.Rename(files)
+	return mmv.Rename(files, dryRun)
 }

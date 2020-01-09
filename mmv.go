@@ -8,10 +8,16 @@ import (
 )
 
 // Rename multiple files.
-func Rename(files map[string]string) error {
+func Rename(files map[string]string, dryRun bool) error {
 	rs, err := buildRenames(files)
 	if err != nil {
 		return err
+	}
+	if dryRun {
+		for _, r := range rs {
+			fmt.Printf("%s => %s\n", r.src, r.dst)
+		}
+		return nil
 	}
 	for i, r := range rs {
 		if err := doRename(r.src, r.dst); err != nil {
