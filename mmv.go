@@ -161,7 +161,7 @@ func buildRenames(files map[string]string) ([]rename, error) {
 			}
 		}
 
-		// if there is a cycle, rename the remporary file
+		// if there is a cycle, rename the temporary file
 		if cycle {
 			rs = append(rs, rename{tmp, dst})
 		}
