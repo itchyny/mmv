@@ -255,6 +255,30 @@ func TestRename(t *testing.T) {
 			err: "duplicate destination: foo",
 		},
 		{
+			name: "undo on error",
+			files: map[string]string{
+				"foo":  "bar",
+				"bar":  "foo",
+				"baz":  "qux",
+				"qux":  "quux",
+				"quux": "baz",
+			},
+			count: 7,
+			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+				"qux": "3",
+			},
+			expected: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+				"qux": "3",
+			},
+			err: "quux: ", // no such file or directory
+		},
+		{
 			name: "create destination directory",
 			files: map[string]string{
 				"foo": "x/foo",

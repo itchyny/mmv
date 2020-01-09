@@ -13,8 +13,16 @@ func Rename(files map[string]string) error {
 	if err != nil {
 		return err
 	}
-	for _, r := range rs {
+	for i, r := range rs {
 		if err := doRename(r.src, r.dst); err != nil {
+			// undo on error not to leave the temporary files
+			// this does not undo directory creation
+			for i--; i >= 0; i-- {
+				if r = rs[i]; os.Rename(r.dst, r.src) != nil {
+					// something wrong happens so give up not to overwrite files
+					break
+				}
+			}
 			return err
 		}
 	}
