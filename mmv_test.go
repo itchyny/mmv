@@ -142,6 +142,10 @@ func TestRename(t *testing.T) {
 				"foo": "0",
 				"bar": "1",
 			},
+			expected: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
 			err: &emptyPathError{},
 		},
 		{
@@ -151,6 +155,10 @@ func TestRename(t *testing.T) {
 				"bar": "",
 			},
 			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			expected: map[string]string{
 				"foo": "0",
 				"bar": "1",
 			},
@@ -164,6 +172,11 @@ func TestRename(t *testing.T) {
 				"baz": "qux",
 			},
 			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+				"baz": "2",
+			},
+			expected: map[string]string{
 				"foo": "0",
 				"bar": "1",
 				"baz": "2",
@@ -196,6 +209,10 @@ func TestRename(t *testing.T) {
 				"foo": "0",
 				"bar": "1",
 			},
+			expected: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
 			err: &sameSourceError{"foo"},
 		},
 		{
@@ -205,6 +222,10 @@ func TestRename(t *testing.T) {
 				"bar": "foo/../baz",
 			},
 			contents: map[string]string{
+				"foo": "0",
+				"bar": "1",
+			},
+			expected: map[string]string{
 				"foo": "0",
 				"bar": "1",
 			},
@@ -262,13 +283,13 @@ func TestRename(t *testing.T) {
 			require.NoError(t, setupFiles(tc.contents))
 			rs, _ := buildRenames(clone(tc.files))
 			assert.Equal(t, tc.count, len(rs))
-			got := Rename(tc.files)
+			err = Rename(tc.files)
 			if tc.err == nil {
-				require.NoError(t, got)
-				assert.Equal(t, tc.expected, fileContents("."))
+				assert.NoError(t, err)
 			} else {
-				assert.Equal(t, tc.err, got)
+				assert.Equal(t, tc.err, err)
 			}
+			assert.Equal(t, tc.expected, fileContents("."))
 		})
 	}
 }
