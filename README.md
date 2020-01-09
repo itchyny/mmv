@@ -1,5 +1,8 @@
 # mmv [![CI Status](https://github.com/itchyny/mmv/workflows/CI/badge.svg)](https://github.com/itchyny/mmv/actions)
 Rename multiple files using your `$EDITOR`. The command name is named after _multi-mv_.
+
+![](https://user-images.githubusercontent.com/375258/72040421-d4f8cd00-32eb-11ea-828f-d9f14f3261ac.gif)
+
 ## Usage
 ```bash
 mmv file ...
