@@ -4,10 +4,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
+	"strings"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestRename(t *testing.T) {
@@ -301,19 +300,31 @@ func TestRename(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			dir, err := ioutil.TempDir("", "mmv-")
+			if err != nil {
+				t.Fatalf("ioutil.TempDir returned an error: %s", err)
+			}
 			defer os.RemoveAll(dir)
-			require.NoError(t, os.Chdir(dir))
-			require.NoError(t, err)
-			require.NoError(t, setupFiles(tc.contents))
+			if err := os.Chdir(dir); err != nil {
+				t.Fatalf("os.Chdir returned an error: %s", err)
+			}
+			if err := setupFiles(tc.contents); err != nil {
+				t.Fatalf("setupFiles returned an error: %s", err)
+			}
 			rs, _ := buildRenames(clone(tc.files))
-			assert.Equal(t, tc.count, len(rs))
+			if got := len(rs); got != tc.count {
+				t.Errorf("expected: %d, got: %d", tc.count, got)
+			}
 			err = Rename(tc.files)
 			if tc.err == "" {
-				assert.NoError(t, err)
-			} else {
-				assert.Contains(t, err.Error(), tc.err)
+				if err != nil {
+					t.Errorf("Rename returned an error: %s", err)
+				}
+			} else if !strings.Contains(err.Error(), tc.err) {
+				t.Errorf("error should contain: %s, got: %s", tc.err, err)
 			}
-			assert.Equal(t, tc.expected, fileContents("."))
+			if got := fileContents("."); !reflect.DeepEqual(got, tc.expected) {
+				t.Errorf("expected: %v, got: %v", tc.expected, got)
+			}
 		})
 	}
 }
