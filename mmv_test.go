@@ -303,7 +303,7 @@ func TestRename(t *testing.T) {
 			if err != nil {
 				t.Fatalf("ioutil.TempDir returned an error: %s", err)
 			}
-			defer os.RemoveAll(dir)
+			t.Cleanup(func() { os.RemoveAll(dir) })
 			if err := os.Chdir(dir); err != nil {
 				t.Fatalf("os.Chdir returned an error: %s", err)
 			}
