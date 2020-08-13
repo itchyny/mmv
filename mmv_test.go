@@ -320,7 +320,7 @@ func TestRename(t *testing.T) {
 
 func setupFiles(contents map[string]string) error {
 	for f, cnt := range contents {
-		if err := ioutil.WriteFile(f, []byte(cnt), 0600); err != nil {
+		if err := ioutil.WriteFile(f, []byte(cnt), 0o600); err != nil {
 			return err
 		}
 	}

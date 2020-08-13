@@ -39,7 +39,7 @@ func doRename(src, dst string) (err error) {
 			return err
 		}
 		// create the destination directory
-		if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 			return err
 		}
 		// try renaming again
