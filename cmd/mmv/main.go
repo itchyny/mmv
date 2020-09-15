@@ -100,7 +100,11 @@ func rename(args []string) error {
 		return err
 	}
 	defer tty.Close()
-	cmd := exec.Command(editor, f.Name())
+
+	editorWithArgs := strings.Split(editor, " ")
+	editorWithArgs = append(editorWithArgs, f.Name())
+
+	cmd := exec.Command(editorWithArgs[0], editorWithArgs[1:]...)
 	cmd.Stdin = tty.Input()
 	cmd.Stdout = tty.Output()
 	cmd.Stderr = tty.Output()
