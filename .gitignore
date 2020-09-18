@@ -1,2 +1,5 @@
-/goxz
 /mmv
+/goxz
+*.exe
+*.test
+*.out
