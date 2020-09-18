@@ -1,4 +1,10 @@
-# mmv [![CI Status](https://github.com/itchyny/mmv/workflows/CI/badge.svg)](https://github.com/itchyny/mmv/actions)
+# mmv
+[![CI Status](https://github.com/itchyny/mmv/workflows/CI/badge.svg)](https://github.com/itchyny/mmv/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/itchyny/mmv)](https://goreportcard.com/report/github.com/itchyny/mmv)
+[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/itchyny/mmv/blob/master/LICENSE)
+[![release](https://img.shields.io/github/release/itchyny/mmv/all.svg)](https://github.com/itchyny/mmv/releases)
+[![pkg.go.dev](https://pkg.go.dev/badge/github.com/itchyny/mmv)](https://pkg.go.dev/github.com/itchyny/mmv)
+
 Rename multiple files using your `$EDITOR`. The command name is named after _multi-mv_.
 
 ![](https://user-images.githubusercontent.com/375258/72040421-d4f8cd00-32eb-11ea-828f-d9f14f3261ac.gif)
