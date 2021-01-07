@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // Rename multiple files.
@@ -74,6 +75,14 @@ func (err *sameDestinationError) Error() string {
 	return fmt.Sprintf("duplicate destination: %s", err.path)
 }
 
+type invalidRenameError struct {
+	src, dst string
+}
+
+func (err *invalidRenameError) Error() string {
+	return fmt.Sprintf("invalid rename: %s, %s", err.src, err.dst)
+}
+
 func buildRenames(files map[string]string) ([]rename, error) {
 	revs := make(map[string]string, len(files)) // reverse of files
 
@@ -104,66 +113,121 @@ func buildRenames(files map[string]string) ([]rename, error) {
 		if _, ok := revs[dst]; ok {
 			return nil, &sameDestinationError{dst}
 		}
+		if k, l := len(src), len(dst); k > l && src[l] == filepath.Separator && src[:l] == dst ||
+			k < l && dst[k] == filepath.Separator && dst[:k] == src {
+			return nil, &invalidRenameError{src, dst}
+		}
 		revs[dst] = src
 	}
 
-	// remove source == destination
+	// group directories by directory depth
+	srcdepths := make([][]string, 1)
+	dstdepths := make([][]string, 1)
 	for src, dst := range files {
-		if src == dst {
-			delete(files, src)
-			delete(revs, dst)
+		// group source paths by directory depth
+		i := strings.Count(src, string(filepath.Separator))
+		if len(srcdepths) <= i {
+			xs := make([][]string, i*2)
+			copy(xs, srcdepths)
+			srcdepths = xs
+		}
+		srcdepths[i] = append(srcdepths[i], src)
+		// group destination paths by directory depth
+		i = strings.Count(dst, string(filepath.Separator))
+		if len(dstdepths) <= i {
+			xs := make([][]string, i*2)
+			copy(xs, dstdepths)
+			dstdepths = xs
+		}
+		dstdepths[i] = append(dstdepths[i], dst)
+	}
+
+	// result renames
+	count := len(files)
+	rs := make([]rename, 0, 2*count)
+
+	// check if any parent directory will be moved
+	for i := len(srcdepths) - 1; i >= 0; i-- {
+	L:
+		for _, src := range srcdepths[i] {
+			for j := 0; j < i; j++ {
+				for _, s := range srcdepths[j] {
+					if k := len(s); len(src) > k && src[k] == filepath.Separator && src[:k] == s {
+						if d := files[s]; s != d {
+							if dst, l := files[src], len(d); i == j+1 && len(dst) > l && dst[:l] == d && dst[l:] == src[k:] {
+								// skip moving a file when it moves along with the closest parent directory
+								delete(files, src)
+								delete(revs, dst)
+							} else {
+								// move to a temporary path before any parent directory is moved
+								tmp := randomPath(filepath.Dir(s))
+								rs = append(rs, rename{src, tmp})
+								files[tmp] = files[dst]
+								delete(files, src)
+								revs[dst] = tmp
+							}
+							continue L
+						}
+					}
+				}
+			}
+			// remove source == destination
+			if dst := files[src]; src == dst {
+				delete(files, src)
+				delete(revs, dst)
+			}
 		}
 	}
 
-	// list the renames
-	var i int
-	rs := make([]rename, 0, 2*len(files))
-	vs := make(map[string]int, len(files))
-	for _, dst := range files {
-		if vs[dst] > 0 {
-			continue
-		}
-		i++ // connected component identifier
+	// list renames in increasing destination directory depth order
+	i, vs := 0, make(map[string]int, count)
+	for _, dsts := range dstdepths {
+		for _, dst := range dsts {
+			if vs[dst] > 0 {
+				continue
+			}
+			i++ // connected component identifier
 
-		// mark the nodes in the connected component and check cycle
-		var cycle bool
-		for {
-			vs[dst] = i
-			if x, ok := files[dst]; ok {
-				dst = x
-				if vs[x] > 0 {
-					cycle = vs[x] == i
+			// mark the nodes in the connected component and check cycle
+			var cycle bool
+			for {
+				vs[dst] = i
+				if x, ok := files[dst]; ok {
+					dst = x
+					if vs[x] > 0 {
+						cycle = vs[x] == i
+						break
+					}
+				} else {
 					break
 				}
-			} else {
-				break
 			}
-		}
 
-		// if there is a cycle, rename to a temporary file
-		var tmp string
-		if cycle {
-			tmp = randomPath(filepath.Dir(dst))
-			rs = append(rs, rename{dst, tmp})
-			vs[dst]--
-		}
+			// if there is a cycle, rename to a temporary file
+			var tmp string
+			if cycle {
+				tmp = randomPath(filepath.Dir(dst))
+				rs = append(rs, rename{dst, tmp})
+				vs[dst]--
+			}
 
-		// rename from the leaf node
-		for {
-			if src, ok := revs[dst]; ok && (!cycle || vs[src] == i) {
-				rs = append(rs, rename{src, dst})
-				if !cycle {
-					vs[dst] = i
+			// rename from the leaf node
+			for {
+				if src, ok := revs[dst]; ok && (!cycle || vs[src] == i) {
+					rs = append(rs, rename{src, dst})
+					if !cycle {
+						vs[dst] = i
+					}
+					dst = src
+				} else {
+					break
 				}
-				dst = src
-			} else {
-				break
 			}
-		}
 
-		// if there is a cycle, rename the temporary file
-		if cycle {
-			rs = append(rs, rename{tmp, dst})
+			// if there is a cycle, rename the temporary file
+			if cycle {
+				rs = append(rs, rename{tmp, dst})
+			}
 		}
 	}
 	return rs, nil

@@ -296,6 +296,92 @@ func TestRename(t *testing.T) {
 				"a/b/c/baz": "2",
 			},
 		},
+		{
+			name: "invalid rename error",
+			files: map[string]string{
+				"x/y": "x",
+			},
+			contents: map[string]string{
+				"x/y": "0",
+			},
+			expected: map[string]string{
+				"x/y": "0",
+			},
+			err: "invalid rename: x",
+		},
+		{
+			name: "invalid rename error",
+			files: map[string]string{
+				"x/y": "x/y/z",
+			},
+			contents: map[string]string{
+				"x/y": "0",
+			},
+			expected: map[string]string{
+				"x/y": "0",
+			},
+			err: "invalid rename: x",
+		},
+		{
+			name: "directory renames",
+			files: map[string]string{
+				"x/foo":  "y/bar",
+				"x/bar":  "z/baz",
+				"x/qux":  "z/qux",
+				"x/quy":  "z/baz/qux",
+				"x/":     "z/",
+				"y/bar":  "x/foo",
+				"y/qux":  "x/qux",
+				"y/":     "w/",
+				"w/":     "y/",
+				"w/x/":   "y/y/",
+				"w/x/x/": "x/z/",
+				"w/x/y":  "y/x/y",
+				"w/x/z":  "w/x/z",
+				"w/x/w":  "x/x/w",
+				"v/":     "v/",
+				"v/x":    "v/y",
+				"v/x/x":  "v/y/x",
+				"xxxxx":  "yyyyy",
+			},
+			count: 26,
+			contents: map[string]string{
+				"x/foo":   "0",
+				"x/bar/a": "1",
+				"x/qux":   "2",
+				"x/quy":   "3",
+				"x/quz":   "4",
+				"y/bar":   "5",
+				"y/baz":   "6",
+				"y/qux":   "7",
+				"w/a":     "8",
+				"w/x/a":   "9",
+				"w/x/x/a": "10",
+				"w/x/y":   "11",
+				"w/x/z":   "12",
+				"w/x/w":   "13",
+				"v/x/x":   "14",
+				"xxxxx":   "15",
+			},
+			expected: map[string]string{
+				"y/bar":     "0",
+				"z/baz/a":   "1",
+				"z/qux":     "2",
+				"z/baz/qux": "3",
+				"z/quz":     "4",
+				"x/foo":     "5",
+				"w/baz":     "6",
+				"x/qux":     "7",
+				"y/a":       "8",
+				"y/y/a":     "9",
+				"x/z/a":     "10",
+				"y/x/y":     "11",
+				"w/x/z":     "12",
+				"x/x/w":     "13",
+				"v/y/x":     "14",
+				"yyyyy":     "15",
+			},
+		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -331,6 +417,12 @@ func TestRename(t *testing.T) {
 
 func setupFiles(contents map[string]string) error {
 	for f, cnt := range contents {
+		dir := filepath.Dir(f)
+		if dir != "." {
+			if err := os.MkdirAll(dir, 0o700); err != nil {
+				return err
+			}
+		}
 		if err := ioutil.WriteFile(f, []byte(cnt), 0o600); err != nil {
 			return err
 		}
