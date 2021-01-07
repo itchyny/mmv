@@ -120,7 +120,7 @@ func buildRenames(files map[string]string) ([]rename, error) {
 		revs[dst] = src
 	}
 
-	// group directories by directory depth
+	// group paths by directory depth
 	srcdepths := make([][]string, 1)
 	dstdepths := make([][]string, 1)
 	for src, dst := range files {
@@ -171,7 +171,7 @@ func buildRenames(files map[string]string) ([]rename, error) {
 					}
 				}
 			}
-			// remove source == destination
+			// remove if source path is equal to destination path
 			if dst := files[src]; src == dst {
 				delete(files, src)
 				delete(revs, dst)
@@ -233,6 +233,7 @@ func buildRenames(files map[string]string) ([]rename, error) {
 	return rs, nil
 }
 
+// create a temporary path where there is no file currently
 func randomPath(dir string) string {
 	for {
 		path := filepath.Join(dir, fmt.Sprint(rand.Uint64()))
