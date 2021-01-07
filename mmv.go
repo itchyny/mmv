@@ -83,6 +83,14 @@ func (err *invalidRenameError) Error() string {
 	return fmt.Sprintf("invalid rename: %s, %s", err.src, err.dst)
 }
 
+type temporaryPathError struct {
+	dir string
+}
+
+func (err *temporaryPathError) Error() string {
+	return fmt.Sprintf("failed to create a temporary path: %s", err.dir)
+}
+
 func buildRenames(files map[string]string) ([]rename, error) {
 	revs := make(map[string]string, len(files)) // reverse of files
 
@@ -160,7 +168,10 @@ func buildRenames(files map[string]string) ([]rename, error) {
 								delete(revs, dst)
 							} else {
 								// move to a temporary path before any parent directory is moved
-								tmp := randomPath(filepath.Dir(s))
+								tmp, err := temporaryPath(filepath.Dir(s))
+								if err != nil {
+									return nil, err
+								}
 								rs = append(rs, rename{src, tmp})
 								files[tmp] = files[dst]
 								delete(files, src)
@@ -206,7 +217,11 @@ func buildRenames(files map[string]string) ([]rename, error) {
 			// if there is a cycle, rename to a temporary file
 			var tmp string
 			if cycle {
-				tmp = randomPath(filepath.Dir(dst))
+				var err error
+				tmp, err = temporaryPath(filepath.Dir(dst))
+				if err != nil {
+					return nil, err
+				}
 				rs = append(rs, rename{dst, tmp})
 				vs[dst]--
 			}
@@ -234,11 +249,12 @@ func buildRenames(files map[string]string) ([]rename, error) {
 }
 
 // create a temporary path where there is no file currently
-func randomPath(dir string) string {
-	for {
+func temporaryPath(dir string) (string, error) {
+	for i := 0; i < 256; i++ {
 		path := filepath.Join(dir, fmt.Sprint(rand.Uint64()))
 		if _, err := os.Stat(path); err != nil && os.IsNotExist(err) {
-			return path
+			return path, nil
 		}
 	}
+	return "", &temporaryPathError{dir}
 }
