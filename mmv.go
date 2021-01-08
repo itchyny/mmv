@@ -1,10 +1,10 @@
 package mmv
 
 import (
-	"fmt"
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -251,7 +251,7 @@ func buildRenames(files map[string]string) ([]rename, error) {
 // create a temporary path where there is no file currently
 func temporaryPath(dir string) (string, error) {
 	for i := 0; i < 256; i++ {
-		path := filepath.Join(dir, fmt.Sprint(rand.Uint64()))
+		path := filepath.Join(dir, strconv.FormatUint(rand.Uint64()|1<<60, 16))
 		if _, err := os.Stat(path); err != nil && os.IsNotExist(err) {
 			return path, nil
 		}
