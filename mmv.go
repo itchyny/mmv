@@ -64,7 +64,7 @@ type sameSourceError struct {
 }
 
 func (err *sameSourceError) Error() string {
-	return fmt.Sprintf("duplicate source: %s", err.path)
+	return "duplicate source: " + err.path
 }
 
 type sameDestinationError struct {
@@ -72,7 +72,7 @@ type sameDestinationError struct {
 }
 
 func (err *sameDestinationError) Error() string {
-	return fmt.Sprintf("duplicate destination: %s", err.path)
+	return "duplicate destination: " + err.path
 }
 
 type invalidRenameError struct {
@@ -80,7 +80,7 @@ type invalidRenameError struct {
 }
 
 func (err *invalidRenameError) Error() string {
-	return fmt.Sprintf("invalid rename: %s, %s", err.src, err.dst)
+	return "invalid rename: " + err.src + ", " + err.dst
 }
 
 type temporaryPathError struct {
@@ -88,7 +88,7 @@ type temporaryPathError struct {
 }
 
 func (err *temporaryPathError) Error() string {
-	return fmt.Sprintf("failed to create a temporary path: %s", err.dir)
+	return "failed to create a temporary path: " + err.dir
 }
 
 func buildRenames(files map[string]string) ([]rename, error) {
