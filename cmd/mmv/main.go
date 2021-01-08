@@ -5,10 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"os/exec"
 	"runtime"
 	"strings"
+	"time"
 
 	_ "github.com/mattn/getwild"
 	"github.com/mattn/go-tty"
@@ -21,6 +23,10 @@ const name = "mmv"
 const version = "0.1.2"
 
 var revision = "HEAD"
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 func main() {
 	os.Exit(run(os.Args[1:]))
