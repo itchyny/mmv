@@ -1,4 +1,7 @@
 # Changelog
+## [v0.1.3](https://github.com/itchyny/mmv/compare/v0.1.2..v0.1.3) (2021-01-10)
+* Support renaming when one of the paths is a parent directory of another.
+
 ## [v0.1.2](https://github.com/itchyny/mmv/compare/v0.1.1..v0.1.2) (2020-09-19)
 * Fix for EDITOR configured with arguments.
 
