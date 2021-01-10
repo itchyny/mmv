@@ -85,28 +85,30 @@ func rename(args []string) error {
 		}
 		xs[src] = true
 	}
+
 	f, err := ioutil.TempFile("", name+"-")
 	if err != nil {
 		return err
 	}
-	defer func() {
-		f.Close()
-		os.Remove(f.Name())
-	}()
+	defer os.Remove(f.Name())
 	for _, arg := range args {
 		f.WriteString(arg)
 		f.WriteString("\n")
 	}
-	editor := os.Getenv("EDITOR")
-	if editor == "" {
-		editor = "vi"
+	if err = f.Close(); err != nil {
+		return err
 	}
+
 	tty, err := tty.Open()
 	if err != nil {
 		return err
 	}
 	defer tty.Close()
 
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		editor = "vi"
+	}
 	editorWithArgs := strings.Fields(editor)
 	editorWithArgs = append(editorWithArgs, f.Name())
 
@@ -114,12 +116,10 @@ func rename(args []string) error {
 	cmd.Stdin = tty.Input()
 	cmd.Stdout = tty.Output()
 	cmd.Stderr = tty.Output()
-	if err := cmd.Run(); err != nil {
+	if err = cmd.Run(); err != nil {
 		return fmt.Errorf("abort renames: %s", err)
 	}
-	if err := f.Close(); err != nil {
-		return err
-	}
+
 	cnt, err := ioutil.ReadFile(f.Name())
 	if err != nil {
 		return err
@@ -132,5 +132,6 @@ func rename(args []string) error {
 	for i, src := range args {
 		files[src] = got[i]
 	}
+
 	return mmv.Rename(files)
 }
