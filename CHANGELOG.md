@@ -1,4 +1,7 @@
 # Changelog
+## [v0.1.4](https://github.com/itchyny/mmv/compare/v0.1.3..v0.1.4) (2021-09-18)
+* Release `arm64` artifacts.
+
 ## [v0.1.3](https://github.com/itchyny/mmv/compare/v0.1.2..v0.1.3) (2021-01-10)
 * Support renaming when one of the paths is a parent directory of another.
 
