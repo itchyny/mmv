@@ -1,6 +1,6 @@
 module github.com/itchyny/mmv
 
-go 1.15
+go 1.16
 
 require (
 	github.com/mattn/getwild v0.0.2-0.20200919000855-c2e221927ad6
