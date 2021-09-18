@@ -24,7 +24,7 @@ brew install itchyny/tap/mmv
 
 ### Build from source
 ```bash
-go get github.com/itchyny/mmv/cmd/mmv
+go install github.com/itchyny/mmv/cmd/mmv@latest
 ```
 
 ## Features
