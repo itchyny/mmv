@@ -98,14 +98,7 @@ func rename(args []string) error {
 	}
 	defer tty.Close()
 
-	editor := os.Getenv("EDITOR")
-	if editor == "" {
-		editor = "vi"
-	}
-	editorWithArgs := strings.Fields(editor)
-	editorWithArgs = append(editorWithArgs, f.Name())
-
-	cmd := exec.Command(editorWithArgs[0], editorWithArgs[1:]...)
+	cmd := exec.Command("sh", "-c", `eval exec "${EDITOR:-vi}" '"$@"'`, "", f.Name())
 	cmd.Stdin = tty.Input()
 	cmd.Stdout = tty.Output()
 	cmd.Stderr = tty.Output()
