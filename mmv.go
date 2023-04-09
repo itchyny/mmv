@@ -1,3 +1,4 @@
+// Package mmv provides a method to rename multiple files.
 package mmv
 
 import (
