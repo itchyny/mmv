@@ -1,7 +1,6 @@
 package mmv
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -385,9 +384,9 @@ func TestRename(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			dir, err := ioutil.TempDir("", "mmv-")
+			dir, err := os.MkdirTemp("", "mmv-")
 			if err != nil {
-				t.Fatalf("ioutil.TempDir returned an error: %s", err)
+				t.Fatalf("os.MkdirTemp returned an error: %s", err)
 			}
 			t.Cleanup(func() { os.RemoveAll(dir) })
 			if err := os.Chdir(dir); err != nil {
@@ -423,7 +422,7 @@ func setupFiles(contents map[string]string) error {
 				return err
 			}
 		}
-		if err := ioutil.WriteFile(f, []byte(cnt), 0o600); err != nil {
+		if err := os.WriteFile(f, []byte(cnt), 0o600); err != nil {
 			return err
 		}
 	}
@@ -432,7 +431,7 @@ func setupFiles(contents map[string]string) error {
 
 func fileContents(dir string) map[string]string {
 	m := make(map[string]string)
-	fis, _ := ioutil.ReadDir(dir)
+	fis, _ := os.ReadDir(dir)
 	for _, fi := range fis {
 		if fi.IsDir() {
 			for k, v := range fileContents(filepath.Join(dir, fi.Name())) {
@@ -440,7 +439,7 @@ func fileContents(dir string) map[string]string {
 			}
 		} else {
 			path := filepath.Join(dir, fi.Name())
-			cnt, _ := ioutil.ReadFile(path)
+			cnt, _ := os.ReadFile(path)
 			m[filepath.ToSlash(path)] = string(cnt)
 		}
 	}

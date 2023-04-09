@@ -4,7 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -86,7 +85,7 @@ func rename(args []string) error {
 		xs[src] = true
 	}
 
-	f, err := ioutil.TempFile("", name+"-")
+	f, err := os.CreateTemp("", name+"-")
 	if err != nil {
 		return err
 	}
@@ -120,7 +119,7 @@ func rename(args []string) error {
 		return fmt.Errorf("abort renames: %s", err)
 	}
 
-	cnt, err := ioutil.ReadFile(f.Name())
+	cnt, err := os.ReadFile(f.Name())
 	if err != nil {
 		return err
 	}
