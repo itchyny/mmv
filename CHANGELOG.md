@@ -1,4 +1,7 @@
 # Changelog
+## [v0.1.5](https://github.com/itchyny/mmv/compare/v0.1.4..v0.1.5) (2023-04-09)
+* Support EDITOR with spaces in the editor path.
+
 ## [v0.1.4](https://github.com/itchyny/mmv/compare/v0.1.3..v0.1.4) (2021-09-18)
 * Release `arm64` artifacts.
 
