@@ -2,10 +2,10 @@
 package mmv
 
 import (
-	"math/rand"
+	"crypto/rand"
+	"encoding/base64"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 )
 
@@ -251,8 +251,12 @@ func buildRenames(files map[string]string) ([]rename, error) {
 
 // create a temporary path where there is no file currently
 func temporaryPath(dir string) (string, error) {
+	bs := make([]byte, 16)
 	for i := 0; i < 256; i++ {
-		path := filepath.Join(dir, strconv.FormatUint(rand.Uint64()|1<<60, 16))
+		if _, err := rand.Read(bs); err != nil {
+			return "", err
+		}
+		path := filepath.Join(dir, base64.RawURLEncoding.EncodeToString(bs))
 		if _, err := os.Stat(path); err != nil && os.IsNotExist(err) {
 			return path, nil
 		}
