@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/kballard/go-shellquote"
 	_ "github.com/mattn/getwild"
 	"github.com/mattn/go-tty"
 
@@ -98,7 +99,17 @@ func rename(args []string) error {
 	}
 	defer tty.Close()
 
-	cmd := exec.Command("sh", "-c", `eval exec "${EDITOR:-vi}" '"$@"'`, "", f.Name())
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		editor = "vi"
+	}
+	editorWithArgs, err := shellquote.Split(editor)
+	if err != nil {
+		return fmt.Errorf("%s: %s", err, editor)
+	}
+	editorWithArgs = append(editorWithArgs, f.Name())
+
+	cmd := exec.Command(editorWithArgs[0], editorWithArgs[1:]...)
 	cmd.Stdin = tty.Input()
 	cmd.Stdout = tty.Output()
 	cmd.Stderr = tty.Output()
