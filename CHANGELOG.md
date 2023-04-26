@@ -1,4 +1,7 @@
 # Changelog
+## [v0.1.6](https://github.com/itchyny/mmv/compare/v0.1.5..v0.1.6) (2023-04-26)
+* Remove dependency on shell for splitting EDITOR with spaces.
+
 ## [v0.1.5](https://github.com/itchyny/mmv/compare/v0.1.4..v0.1.5) (2023-04-09)
 * Support EDITOR with spaces in the editor path.
 
